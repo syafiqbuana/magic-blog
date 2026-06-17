@@ -46,16 +46,21 @@ export default async function EditArticlePage({
   }
 
   // Siapkan data awal untuk dikirim ke Client Component
+// Siapkan data awal untuk dikirim ke Client Component
   const initialData = {
     id: article.id,
     title: article.title,
-    content: article.content,
+    
+    // PERBAIKAN 1: Gunakan Nullish Coalescing (??) 
+    // Jika article.content adalah null, ubah menjadi string kosong ""
+    content: article.content ?? "", 
+    
     images: imageUrl,
     isPublished: article.isPublished,
-    // Ambil ID dari masing-masing kategori
-    categoryIds: article.categories.map((cat: any) => cat.id), 
+    
+    // PERBAIKAN 2: Ganti 'any' dengan tipe data object yang memiliki id berupa string
+    categoryIds: article.categories.map((cat: { id: string }) => cat.id), 
   };
-
   return (
     <div className="flex flex-col space-y-4">
       <h1 className="text-2xl font-bold">Edit Article</h1>
