@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,26 +22,81 @@ model User {
 
   profile       UserProfile?
 
+  // --- HUBUNGAN BARU ---
+  // Karena 1 user = 1 blog, maka artikel dan kategori langsung dimiliki oleh user ini
+  articles      Article[]
+  categories    Category[]
+
   @@unique([email])
   @@map("user")
 }
 
 model UserProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  // Tambahkan tanda tanya (?) agar menjadi nullable
-  slug        String?  @unique 
-  fullname    String 
-  profilePhoto       String?  
+  slug         String?  @unique // Slug ini yang akan menjadi URL Blog Utama (contoh: platform.com/slug-user)
+  fullname     String 
+  profilePhoto String?  
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("user_profile")
 }
+
+// Model Article (Artikel Blog)
+model Article {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String
+  content     String?    @db.Text
+  isPublished Boolean    @default(false)
+  images      Json?
+  
+  // Relasi ke Pemilik Blog (User)
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // RELASI MANY-TO-MANY KE CATEGORY
+  // Prisma akan otomatis membuat tabel pivot di background
+  categories  Category[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Multi-tenant rule: Slug artikel hanya boleh kembar di blog user yang berbeda,
+  // tetapi harus unik di dalam blog user yang sama.
+  @@unique([userId, slug])
+  @@index([userId])
+  @@map("article")
+}
+
+// Model Category (Kategori Blog)
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String
+
+  // Relasi ke Pemilik Blog (User)
+  // Ini penting agar Kategori milik User A tidak muncul di dashboard User B
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // RELASI MANY-TO-MANY KE ARTICLE
+  articles    Article[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Multi-tenant rule: User A dan User B sama-sama bisa punya kategori bernama "Teknologi" (slug: teknologi)
+  // tanpa takut bentrok di database karena kombinasi userId + slug harus unik.
+  @@unique([userId, slug])
+  @@index([userId])
+  @@map("category")
+}
+
 
 model Session {
   id        String   @id

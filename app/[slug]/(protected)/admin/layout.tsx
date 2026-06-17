@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebarWrapper } from "@/components/app-sidebar-wrapper"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Toaster } from "@/components/ui/sonner"
 import { headers } from "next/headers"
 
 export default async function AdminLayout({ 
@@ -42,6 +43,7 @@ export default async function AdminLayout({
           
           <div className="p-4 pt-0">
             {children}
+            <Toaster position="top-right" richColors />
           </div>
         </main>
 

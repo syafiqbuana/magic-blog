@@ -42,7 +42,7 @@ export function AppSidebar({
             >
               <Link href={isAdminPath && slug ? `/${slug}/admin` : "/superadmin/dashboard"}>
                 <CommandIcon className="size-5!" />
-                <span className="text-base font-semibold">Magic Gallery</span>
+                <span className="text-base font-semibold">Restricted Area</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
