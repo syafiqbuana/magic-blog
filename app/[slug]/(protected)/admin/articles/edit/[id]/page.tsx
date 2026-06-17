@@ -26,17 +26,22 @@ export default async function EditArticlePage({
 
   // Formatting gambar (karena di database kamu mungkin array/JSON string, 
   // tapi di form memakai single string imageUrl)
+// Formatting gambar
   let imageUrl = "";
   if (article.images) {
     if (typeof article.images === "string") {
       try {
         const parsed = JSON.parse(article.images);
-        imageUrl = Array.isArray(parsed) ? parsed[0] : article.images;
+        // Tambahkan fallback tipe data di sini juga untuk keamanan
+        imageUrl = Array.isArray(parsed) ? String(parsed[0] || "") : article.images;
       } catch {
         imageUrl = article.images;
       }
-    } else if (Array.isArray(article.images)) {
-      imageUrl = article.images[0];
+    } else if (Array.isArray(article.images) && article.images.length > 0) {
+      // FIX: Gunakan type assertion (as string) 
+      // atau cek typeof untuk memastikan itu string
+      const firstImage = article.images[0];
+      imageUrl = typeof firstImage === "string" ? firstImage : "";
     }
   }
 
