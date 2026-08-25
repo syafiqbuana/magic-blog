@@ -1,36 +1,53 @@
-// app/superadmin/layout.tsx
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth"; // Sesuaikan dengan lokasi konfigurasi Better Auth kamu
 
-export default async function SuperadminLayout({
+
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebarWrapper } from "@/components/app-sidebar-wrapper"
+import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
+import { Toaster } from "@/components/ui/sonner"
+import { headers } from "next/headers"
+
+export default async function AdminLayout({ 
   children,
-}: {
+  params,
+}: { 
   children: React.ReactNode;
+  params: Promise<{ slug: string }> | { slug: string }; // Mendukung Next.js 14 & 15
 }) {
-  // 1. Ambil sesi dari sisi server
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  // Ambil slug dari parameter URL
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
 
-  // 2. Jika tidak ada sesi sama sekali (belum login), kembalikan ke form login
-  if (!session?.user) {
-    redirect("/superadmin/login"); 
-  }
-
-  // 3. VALIDASI UTAMA: Jika login tapi BUKAN superadmin, tendang!
-  if (!session.user.isSuperadmin) {
-    // Kamu bisa melemparnya ke halaman universal, halaman login mereka, atau halaman 403 Forbidden
-    redirect("/universal/login"); 
-  }
-
-  // 4. Jika lolos validasi, render halaman superadmin
-  return (
-    <div className="superadmin-wrapper">
-      {/* Kamu bisa meletakkan Sidebar, Header, atau Navigasi khusus 
-        Superadmin di sini agar terpisah dari UI user biasa 
-      */}
-      {children}
-    </div>
+  const session = await auth.api.getSession(
+    {
+      headers: await headers(),
+    }
   );
+
+  if (!session?.user) {
+    redirect(`/superadmin/login`);
+  }
+
+  return (
+    <TooltipProvider>
+      <SidebarProvider>
+        
+        {/* Kirimkan slug ke Wrapper agar navigasi tahu ini ruang kerja siapa */}
+        <AppSidebarWrapper slug={slug} />
+        
+        <main className="w-full flex-1">
+          <div className="p-4">
+            <SidebarTrigger />
+          </div>
+          
+          <div className="p-4 pt-0">
+            {children}
+            <Toaster position="top-right" richColors />
+          </div>
+        </main>
+
+      </SidebarProvider>
+    </TooltipProvider>
+  )
 }

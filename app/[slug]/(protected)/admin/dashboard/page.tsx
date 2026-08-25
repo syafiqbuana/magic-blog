@@ -5,40 +5,30 @@ import { SiteHeader } from "@/components/site-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Card } from "@/components/ui/card";
+import StatOverview from "@/components/stat-overview";
 
+// 1. Definisikan tipe Props, params bisa berupa Promise (Next 15) atau Object biasa (Next 14)
+type PageProps = {
+  params: Promise<{ slug: string }> | { slug: string };
+};
 
+// 2. Ubah Page menjadi 'async function'
+export default async function Page({ params }: PageProps) {
+  
+  // 3. Wajib di-await agar nilai slug keluar dari Promise-nya
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
 
-export default function Page() {
   return (
     <SidebarInset>
       <div className="flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2">
           <SiteHeader />
           <div className="flex flex-row m-2 py-4 md:gap-6 md:py-6">
-            <Card className="w-[200px]">
-              <CardHeader>
-                <CardTitle>Posts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <span className="text-2xl font-bold">100</span>
-              </CardContent>
-            </Card>
-            <Card className="w-[200px]">
-              <CardHeader>
-                <CardTitle>Overview</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Card content</p>
-              </CardContent>
-            </Card>
-            <Card className="w-[200px]">
-              <CardHeader>
-                <CardTitle>Overview</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Card content</p>
-              </CardContent>
-            </Card>
+            
+            {/* 4. Masukkan variabel slug yang sudah di-resolve */}
+            <StatOverview slug={slug} />
+            
           </div>
         </div>
       </div>

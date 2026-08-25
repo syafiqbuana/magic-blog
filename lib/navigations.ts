@@ -9,7 +9,7 @@ export const superadminNav = [
     icon: HouseIcon,
   },
   {
-    title: "Manajemen Tenant",
+    title: "Manage Users",
     url: "/superadmin/tenants",
     icon: UsersIcon,
   },

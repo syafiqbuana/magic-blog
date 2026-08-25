@@ -30,9 +30,6 @@ export function BlogSiteHeader() {
           <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors pb-1 pt-2 whitespace-nowrap">
             About
           </Link>
-          <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors pb-1 pt-2 whitespace-nowrap">
-            Newsletter
-          </Link>
         </nav>
       </div>
     </header>
