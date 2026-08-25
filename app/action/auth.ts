@@ -12,8 +12,7 @@ function generateSlug(name: string) {
     .toLowerCase()
     .trim()
     .replace(/[\s\W-]+/g, "-");
-  const randomString = Math.random().toString(36).substring(2, 6);
-  return `${baseSlug}-${randomString}`;
+  return `${baseSlug}`;
 }
 
 export async function getCurrentUser() {
@@ -205,5 +204,5 @@ export async function signUpAction(formData: FormData) {
   }
 
   // Jika berhasil, alihkan pengguna ke halaman dashboard/admin mereka
-  redirect(`/${slug}/admin`);
+  redirect(`/${slug}/admin/dashboard`);
 }

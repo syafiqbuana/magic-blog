@@ -26,7 +26,7 @@ export default async function BlogHomepage({
 
   return (
     <div className="flex flex-col min-h-screen bg-background font-mono">
-      <BlogSiteHeader />
+      <BlogSiteHeader slug={slug} />
 
       <main className="flex-grow w-full max-w-5xl mx-auto px-4 py-12">
         {/* Page Header */}
@@ -90,7 +90,7 @@ export default async function BlogHomepage({
         )}
       </main>
 
-      <BlogSiteFooter />
+      <BlogSiteFooter slug={slug} />
     </div>
   );
 }

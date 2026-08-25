@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Rss, UserCircle } from "lucide-react";
+import { getTenantBySlug } from "@/lib/articles";
 
-export function BlogSiteHeader() {
+export async function BlogSiteHeader({ slug }: { slug: string }) {
+  const tenant = await getTenantBySlug(slug);
+
   return (
     <header className="bg-background sticky top-0 z-50 border-b border-border">
       <div className="flex flex-col w-full">
         <div className="flex justify-between items-center w-full px-4 py-2 max-w-5xl mx-auto">
           <Link href="/" className="text-lg font-bold tracking-tight">
-            Syafiq Galih Rengga Buana
+            {tenant?.fullname ?? "Blog"}
           </Link>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="rounded-full">
